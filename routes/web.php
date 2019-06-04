@@ -15,11 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/index', function () {
-	$users = App\User::get();
-	return view('index', compact('users'));
-});
-
-Auth::routes();
+Route::get('/index', 'LikeController@index')->name('like.index');
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+Route::post('/like', 'LikeController@store')->name('like');
+
+
+Auth::routes();

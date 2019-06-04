@@ -36,4 +36,33 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function likes () {
+        return $this->hasMany('App\Like');
+    }
+
+    /**
+     * Finds and returns all users that are not liked.
+     *
+     * @return collection
+     */
+    public function unliked_users () {
+        $users = User::get();
+        $user_ids = $users->map(function ($item, $key) {
+            return $item->id;
+        });
+
+        $liked_user_ids = $this->likes->map(function ($item, $key) {
+            return $item->liked_user_id;
+        });
+
+        $liked_user_ids = $liked_user_ids->toArray();
+        $user_ids = $user_ids->toArray();
+
+        $difference = array_diff($user_ids, $liked_user_ids);
+
+        $users = User::findMany($difference);
+
+        return $users;
+    }
 }

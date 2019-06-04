@@ -10,7 +10,15 @@
                 <div class="card-body">
                     <ul>
                         @foreach($users as $user)
-                        <p>{{ $user->name }}</p>
+                            <li>
+                                <form class="form-inline" action="{{ route('like') }}" method="post">
+                                    @csrf
+                                    <span>{{ $user->name }}</span>
+                                    &nbsp;
+                                    <input type="hidden" name="liked_user_id" value="{{ $user->id }}">
+                                    <button class="btn btn-success" style="margin: 1px">Like</button>
+                                </form>
+                            </li>
                         @endforeach
                     </ul>
                 </div>
