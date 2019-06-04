@@ -20,6 +20,17 @@ class LikeController extends Controller
     }
 
     /**
+     * Display a listing of the users likes.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function likes()
+    {
+        $users = auth()->user()->liked_users();
+        return view('liked-users', compact('users'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -42,7 +53,6 @@ class LikeController extends Controller
 
         $user = auth()->user();
         $user->likes()->save($like);
-        $users = User::get();
 
         return redirect()->action('LikeController@index');
     }
@@ -87,8 +97,10 @@ class LikeController extends Controller
      * @param  \App\Like  $like
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Like $like)
+    public function destroy()
     {
-        //
+        $liked_user_id = request('liked_user_id');
+        auth()->user()->likes()->where('liked_user_id', $liked_user_id)->delete();
+        return redirect()->action('LikeController@likes');
     }
 }

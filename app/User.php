@@ -41,6 +41,14 @@ class User extends Authenticatable
         return $this->hasMany('App\Like');
     }
 
+    public function liked_users () {
+        $user_ids = $this->likes->map(function ($item, $key) {
+            return $item->liked_user_id;
+        });
+
+        return User::findMany($user_ids);
+    }
+
     /**
      * Finds and returns all users that are not liked.
      *
