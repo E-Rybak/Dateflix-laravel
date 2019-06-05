@@ -41,6 +41,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Like');
     }
 
+    /**
+     * 
+     * 
+     * @return collection
+     */
     public function liked_users () {
         $user_ids = $this->likes->map(function ($item, $key) {
             return $item->liked_user_id;
@@ -50,27 +55,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Finds and returns all users that are not liked.
+     * Finds and returns all users that are not liked by the user instance.
      *
      * @return collection
      */
     public function unliked_users () {
         $users = User::get();
-        $user_ids = $users->map(function ($item, $key) {
-            return $item->id;
-        });
 
         $liked_user_ids = $this->likes->map(function ($item, $key) {
             return $item->liked_user_id;
         });
 
-        $liked_user_ids = $liked_user_ids->toArray();
-        $user_ids = $user_ids->toArray();
+        $difference = $users->whereNotIn('id', $liked_user_ids);
 
-        $difference = array_diff($user_ids, $liked_user_ids);
-
-        $users = User::findMany($difference);
-
-        return $users;
+        return $difference;
     }
 }
