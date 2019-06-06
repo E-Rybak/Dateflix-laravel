@@ -18,6 +18,11 @@
                                     <input type="hidden" name="liked_user_id" value="{{ $user->id }}">
                                     <button class="btn btn-success" style="margin: 1px">Like</button>
                                 </form>
+                                <form class="form-inline" action="{{ route('block.store') }}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                    <button class="btn btn-danger" style="margin: 1px">Block</button>
+                                </form>
                             </li>
                         @endforeach
                     </ul>

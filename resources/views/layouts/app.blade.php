@@ -40,6 +40,10 @@
                         <li class="nav-item">
                             <a href="{{ route('like.index') }}" class="nav-item">{{ __('Users') }}</a>
                         </li>
+                        &nbsp;
+                        <li class="nav-item">
+                            <a href="{{ route('blocks') }}" class="nav-item">{{ __('Blocked users') }}</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

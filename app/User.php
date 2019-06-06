@@ -41,6 +41,10 @@ class User extends Authenticatable
         return $this->hasMany('App\Like');
     }
 
+    public function blocks () {
+        return $this->hasMany('App\Block');
+    }
+
     /**
      * 
      * 
@@ -51,7 +55,11 @@ class User extends Authenticatable
             return $item->liked_user_id;
         });
 
-        return User::findMany($user_ids);
+        $users = User::findMany($user_ids);
+        $filtered_users = $this->filter_blocked_users($users);
+        
+
+        return $filtered_users;
     }
 
     /**
@@ -67,7 +75,24 @@ class User extends Authenticatable
         });
 
         $difference = $users->whereNotIn('id', $liked_user_ids);
+        $without_blocked_users = $this->filter_blocked_users($difference);
 
-        return $difference;
+        return $without_blocked_users;
+    }
+
+    public function blocked_users () {
+        $block_ids = $this->blocks->map(function ($item, $key) {
+            return $item->blocked_user_id;
+        });
+
+        return User::findMany($block_ids);
+    }
+
+    private function filter_blocked_users ($users) {
+        $block_ids = $this->blocks->map(function ($item, $key) {
+            return $item->blocked_user_id;
+        });
+
+        return $users->whereNotIn('id', $block_ids);
     }
 }
