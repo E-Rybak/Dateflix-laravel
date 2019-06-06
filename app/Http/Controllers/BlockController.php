@@ -20,16 +20,6 @@ class BlockController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -41,40 +31,6 @@ class BlockController extends Controller
         $block->blocked_user_id = request('user_id');
         auth()->user()->blocks()->save($block);
         return redirect()->action('LikeController@index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Block  $block
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Block $block)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Block  $block
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Block $block)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Block  $block
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Block $block)
-    {
-        //
     }
 
     /**
