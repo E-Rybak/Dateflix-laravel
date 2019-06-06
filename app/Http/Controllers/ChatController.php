@@ -14,8 +14,28 @@ class ChatController extends Controller
      */
     public function index()
     {
-        $chats = Chat::get();
-        return view('chat-index', compact('chats'));
+        $user = auth()->user()->load('chats');
+        $chats = $user->chats->load('users');
+        $chat_ids = $chats->map(function ($item, $key) {
+            return $item->users->map(function ($item, $key) {
+                return $item->id;
+            });
+        });
+        
+        $id = 2; // This id should normally come from a request, and is the id of the other participant in the chat. IE, not the authed user.
+        $chat_exists = false;
+        foreach ($chat_ids as $chat_id)
+        {
+            if ($chat_id->contains($id) && $chat_id->contains(auth()->id()))
+            {
+                $chat_exists = true;
+            }
+        }
+        if ($chat_exists) {
+            return "Chat already exists";
+        } else {
+            return "Chat created!";
+        }
     }
 
     /**
