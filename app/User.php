@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'birthday', 'sex',
     ];
 
     /**
@@ -36,4 +36,38 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function likes () {
+        return $this->hasMany('App\Like');
+    }
+
+    /**
+     * 
+     * 
+     * @return collection
+     */
+    public function liked_users () {
+        $user_ids = $this->likes->map(function ($item, $key) {
+            return $item->liked_user_id;
+        });
+
+        return User::findMany($user_ids);
+    }
+
+    /**
+     * Finds and returns all users that are not liked by the user instance.
+     *
+     * @return collection
+     */
+    public function unliked_users () {
+        $users = User::get();
+
+        $liked_user_ids = $this->likes->map(function ($item, $key) {
+            return $item->liked_user_id;
+        });
+
+        $difference = $users->whereNotIn('id', $liked_user_ids);
+
+        return $difference;
+    }
 }
