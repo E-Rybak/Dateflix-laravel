@@ -45,6 +45,14 @@ class User extends Authenticatable
         return $this->hasMany('App\Block');
     }
 
+    public function messages () {
+        return $this->hasMany('App\Message');
+    }
+
+    public function chats () {
+        return $this->belongsToMany('App\Chat');
+    }
+
     /**
      * 
      * 

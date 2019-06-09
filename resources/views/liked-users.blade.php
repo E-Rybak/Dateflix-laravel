@@ -19,6 +19,11 @@
                                     <input type="hidden" name="liked_user_id" value="{{ $user->id }}">
                                     <button class="btn btn-danger" style="margin: 1px">Unlike</button>
                                 </form>
+                                <form class="form-inline" action="{{ route('chat.store') }}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                    <button class="btn btn-info">Start chat</button>
+                                </form>
                             </li>
                         @endforeach
                     </ul>
