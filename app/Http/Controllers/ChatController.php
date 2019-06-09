@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Chat;
 use Illuminate\Http\Request;
+use App\Services\ValidatesChats;
 
 class ChatController extends Controller
 {
+
+    use ValidatesChats;
+
     /**
      * Display a listing of the resource.
      *
@@ -14,28 +18,8 @@ class ChatController extends Controller
      */
     public function index()
     {
-        $user = auth()->user()->load('chats');
-        $chats = $user->chats->load('users');
-        $chat_ids = $chats->map(function ($item, $key) {
-            return $item->users->map(function ($item, $key) {
-                return $item->id;
-            });
-        });
-        
-        $id = 2; // This id should normally come from a request, and is the id of the other participant in the chat. IE, not the authed user.
-        $chat_exists = false;
-        foreach ($chat_ids as $chat_id)
-        {
-            if ($chat_id->contains($id) && $chat_id->contains(auth()->id()))
-            {
-                $chat_exists = true;
-            }
-        }
-        if ($chat_exists) {
-            return "Chat already exists";
-        } else {
-            return "Chat created!";
-        }
+        $chats = Chat::get();
+        return view('chat-index', compact('chats'));
     }
 
     /**

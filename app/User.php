@@ -89,18 +89,18 @@ class User extends Authenticatable
     }
 
     public function blocked_users () {
-        $block_ids = $this->blocks->map(function ($item, $key) {
+        $blocked_ids = $this->blocks->map(function ($item, $key) {
             return $item->blocked_user_id;
         });
 
-        return User::findMany($block_ids);
+        return User::findMany($blocked_ids);
     }
 
     private function filter_blocked_users ($users) {
-        $block_ids = $this->blocks->map(function ($item, $key) {
+        $blocked_ids = $this->blocks->map(function ($item, $key) {
             return $item->blocked_user_id;
         });
 
-        return $users->whereNotIn('id', $block_ids);
+        return $users->whereNotIn('id', $blocked_ids);
     }
 }
