@@ -33,7 +33,17 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li class="nav-item">
+                            <a href="{{ route('likes') }}" class="nav-item">{{ __('Liked users') }}</a>
+                        </li>
+                        &nbsp;
+                        <li class="nav-item">
+                            <a href="{{ route('like.index') }}" class="nav-item">{{ __('Users') }}</a>
+                        </li>
+                        &nbsp;
+                        <li class="nav-item">
+                            <a href="{{ route('blocks') }}" class="nav-item">{{ __('Blocked users') }}</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
