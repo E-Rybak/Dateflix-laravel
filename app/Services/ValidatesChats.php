@@ -4,9 +4,15 @@ namespace App\Services;
 
 trait ValidatesChats {
 
-	private function CheckChatExistence($id)
+	/**
+	 * Check if a chat between the two users already exists
+	 * 
+	 * @param integer $user_id
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
+	private function CheckChatExistence($user_id)
 	{
-        if ((int)$id === (int) auth()->id())
+        if ((int)$user_id === (int) auth()->id())
         {
             return "User id is the same as auth id";
         }
@@ -19,7 +25,7 @@ trait ValidatesChats {
         $chat_exists = false;
         foreach ($chat_participants as $participant)
         {
-            if ($participant->contains($id) && $participant->contains(auth()->id()))
+            if ($participant->contains($user_id) && $participant->contains(auth()->id()))
             {
                 $chat_exists = true;
                 break;
