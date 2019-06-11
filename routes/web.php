@@ -30,7 +30,6 @@ Route::get('/chat/{id}', 'ChatController@show')->name('chat.show');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
 /**
  * 	post routes
  */

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Chat;
+use App\User;
 use Illuminate\Http\Request;
 use App\Services\ValidatesChats;
 
@@ -31,13 +32,32 @@ class ChatController extends Controller
      */
     public function store()
     {
-        return $this->getChatFromUserIds($arrayName = array(2));
         $likedUserId = request('user_id');
-        if ($this->DoesChatExists($likedUserId))
+
+        if ((int)$likedUserId === (int) auth()->id())
         {
-            return "Chat already exists";
+            return "User id is the same as auth id";
         }
 
+        if ($this->DoesChatExists($likedUserId))
+        {
+            $chats = $this->getChatFromUserIds($userIds = array($likedUserId));
+            if ((int)$chats->count() == 1)
+            {
+                $chat = $chats->first();
+                return redirect()->action('ChatController@show', $chat->id);
+            }
+            //TODO: two users can have multiple chat instances.
+            return "TODO: two user can have multiple chat instances - from ChatController line 44";
+        }
+        $chat = new Chat();
+        $chat->name = auth()->user()->name;
+        $chat->save();
+        $participants = collect([auth()->user(), User::findOrFail($likedUserId)]);
+        foreach ($participants as $participant) {
+            $chat->users()->save($participant);
+        }
+        return redirect()->action('ChatController@show', $chat->id);
     }
 
     /**

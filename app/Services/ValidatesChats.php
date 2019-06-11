@@ -15,11 +15,6 @@ trait ValidatesChats {
 	 */
 	private function DoesChatExists($user_id)
 	{
-        if ((int)$user_id === (int) auth()->id())
-        {
-            return "User id is the same as auth id";
-        }
-
         $user = auth()->user()->load('chats');
         $chats = $user->chats->load('users');
         
@@ -57,6 +52,7 @@ trait ValidatesChats {
     /**
      * Get and return the chat instances that are shared between an array of users and the  
      * authenticated user
+     * The parameter is an array of users ids exluding the authenticated user.
      *
      * @param array $ids
      * @return \Illuminate\Database\Eloquent\Collection
