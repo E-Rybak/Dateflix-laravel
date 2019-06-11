@@ -6,6 +6,7 @@ use App\Chat;
 use Illuminate\Http\Request;
 use App\Services\ValidatesChats;
 
+
 class ChatController extends Controller
 {
 
@@ -30,7 +31,13 @@ class ChatController extends Controller
      */
     public function store()
     {
-        //
+        return $this->getChatFromUserIds($arrayName = array(2));
+        $likedUserId = request('user_id');
+        if ($this->DoesChatExists($likedUserId))
+        {
+            return "Chat already exists";
+        }
+
     }
 
     /**
