@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -23,7 +24,7 @@ class SendMessage implements ShouldBroadcastNow
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct(Message $message)
     {
         $this->message = $message;
     }
@@ -35,6 +36,6 @@ class SendMessage implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new Channel('channel-name');
     }
 }

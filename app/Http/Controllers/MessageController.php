@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Message;
 use App\Chat;
+use App\Events\SendMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Services\ValidatesChats;
@@ -21,6 +22,10 @@ class MessageController extends Controller
      */
     public function store()
     {
+
+        $message = new Message();
+        $message->body = request('message');
+
         $chat = Chat::findOrFail(request('chat_id'));
         $result = $this->IsUserAChatParticipant($chat, auth()->user());
         /*
@@ -33,13 +38,12 @@ class MessageController extends Controller
         */
         if ($result)
         {
-            DB::transaction(function () {
-                $message = new Message();
-                $message->body = request('message');
+            DB::transaction(function () use($message, $chat){
                 auth()->user()->messages()->save($message);
-                Chat::findOrFail(request('chat_id'))->messages()->save($message);
+                $chat->messages()->save($message);
             }, 5);
 
+            broadcast(new SendMessage($message));
             return redirect()->action('ChatController@show', $chat->id);
         }
     }
