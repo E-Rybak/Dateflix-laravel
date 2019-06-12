@@ -21,11 +21,23 @@
                     <ul>
                         @foreach($chat->messages as $message)
                             <li>
-                                $message->body
+                                {{ $message->body }}
                             </li>
                         @endforeach
                     </ul>
                 </div>
+                <form method="post" action="{{ route('message.store') }}">
+                    @csrf
+                    <input type="text" name="message" required>
+                    <input type="hidden" name="chat_id" value="{{ $chat->id }}">
+                    <button class="btn btn-success">Send message</button>
+                </form>
+                <form method="post" action="{{ route('chat.destroy') }}">
+                    @csrf
+                    {{ method_field('DELETE') }}
+                    <input type="hidden" name="chat_id" value="{{ $chat->id }}">
+                    <button class="btn btn-danger">Delete chat permanently</button>                
+                </form>
             </div>
         </div>
     </div>

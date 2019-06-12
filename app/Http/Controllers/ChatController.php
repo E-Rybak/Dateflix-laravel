@@ -53,10 +53,7 @@ class ChatController extends Controller
         $chat = new Chat();
         $chat->name = auth()->user()->name;
         $chat->save();
-        $participants = collect([auth()->user(), User::findOrFail($likedUserId)]);
-        foreach ($participants as $participant) {
-            $chat->users()->save($participant);
-        }
+        $chat->addParticipant($likedUserId);
         return redirect()->action('ChatController@show', $chat->id);
     }
 
@@ -78,8 +75,10 @@ class ChatController extends Controller
      * @param  \App\Chat  $chat
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Chat $chat)
+    public function destroy()
     {
-        //
+        $chat = Chat::findOrFail(request('chat_id'));
+        $chat->delete(); // Triggers ChatDeleted event and listener DeleteChatRelations, which detaches all users from the chat.
+        return redirect()->action('ChatController@index');
     }
 }

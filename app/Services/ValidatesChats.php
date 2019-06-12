@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
+use App\User;
 use App\Chat;
 
 trait ValidatesChats {
@@ -86,5 +87,25 @@ trait ValidatesChats {
             return $item->chat_id;
         }));
     }
-}
 
+    /**
+     * Determine if a given user is a participant in a specified chat.
+     *
+     * @param \App\Chat $chat  
+     * @param \App\User $user
+     * @return bool
+     */
+    private function IsUserAChatParticipant(Chat $chat, User $user)
+    {
+        foreach ($chat->users as $participant) 
+        {
+            if ((int) $participant->id === (int) $user->id)
+            {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+}

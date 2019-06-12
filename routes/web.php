@@ -39,10 +39,14 @@ Route::post('/block', 'BlockController@store')->name('block.store');
 
 Route::post('/chat', 'ChatController@store')->name('chat.store');
 
+Route::post('/message', 'MessageController@store')->name('message.store');
+
 
 /**
  * 	delete routes
  */
+Route::delete('/chat', 'ChatController@destroy')->name('chat.destroy');
+
 Route::delete('/like', 'LikeController@destroy')->name('like.destroy');
 
 Route::delete('/block', 'BlockController@destroy')->name('block.destroy');
