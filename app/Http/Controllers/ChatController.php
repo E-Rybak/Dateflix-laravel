@@ -3,10 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Chat;
+use App\User;
 use Illuminate\Http\Request;
+use App\Services\ValidatesChats;
+
 
 class ChatController extends Controller
 {
+
+    use ValidatesChats;
+
     /**
      * Display a listing of the resource.
      *
@@ -14,28 +20,8 @@ class ChatController extends Controller
      */
     public function index()
     {
-        $user = auth()->user()->load('chats');
-        $chats = $user->chats->load('users');
-        $chat_ids = $chats->map(function ($item, $key) {
-            return $item->users->map(function ($item, $key) {
-                return $item->id;
-            });
-        });
-        
-        $id = 2; // This id should normally come from a request, and is the id of the other participant in the chat. IE, not the authed user.
-        $chat_exists = false;
-        foreach ($chat_ids as $chat_id)
-        {
-            if ($chat_id->contains($id) && $chat_id->contains(auth()->id()))
-            {
-                $chat_exists = true;
-            }
-        }
-        if ($chat_exists) {
-            return "Chat already exists";
-        } else {
-            return "Chat created!";
-        }
+        $chats = Chat::get();
+        return view('chat-index', compact('chats'));
     }
 
     /**
@@ -46,7 +32,29 @@ class ChatController extends Controller
      */
     public function store()
     {
-        //
+        $likedUserId = request('user_id');
+
+        if ((int)$likedUserId === (int) auth()->id())
+        {
+            return "User id is the same as auth id";
+        }
+
+        if ($this->DoesChatExists($likedUserId))
+        {
+            $chats = $this->getChatFromUserIds($userIds = array($likedUserId));
+            if ((int)$chats->count() == 1)
+            {
+                $chat = $chats->first();
+                return redirect()->action('ChatController@show', $chat->id);
+            }
+            //TODO: two users can have multiple chat instances.
+            return "TODO: two user can have multiple chat instances - from ChatController line 44";
+        }
+        $chat = new Chat();
+        $chat->name = auth()->user()->name;
+        $chat->save();
+        $chat->addParticipant($likedUserId);
+        return redirect()->action('ChatController@show', $chat->id);
     }
 
     /**
@@ -67,8 +75,10 @@ class ChatController extends Controller
      * @param  \App\Chat  $chat
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Chat $chat)
+    public function destroy()
     {
-        //
+        $chat = Chat::findOrFail(request('chat_id'));
+        $chat->delete(); // Triggers ChatDeleted event and listener DeleteChatRelations, which detaches all users from the chat.
+        return redirect()->action('ChatController@index');
     }
 }

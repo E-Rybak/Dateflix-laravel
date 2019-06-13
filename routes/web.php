@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 /**
  *  get routes
  */
@@ -29,7 +30,6 @@ Route::get('/chat/{id}', 'ChatController@show')->name('chat.show');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
 /**
  * 	post routes
  */
@@ -39,10 +39,14 @@ Route::post('/block', 'BlockController@store')->name('block.store');
 
 Route::post('/chat', 'ChatController@store')->name('chat.store');
 
+Route::post('/message', 'MessageController@store')->name('message.store');
+
 
 /**
  * 	delete routes
  */
+Route::delete('/chat', 'ChatController@destroy')->name('chat.destroy');
+
 Route::delete('/like', 'LikeController@destroy')->name('like.destroy');
 
 Route::delete('/block', 'BlockController@destroy')->name('block.destroy');
