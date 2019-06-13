@@ -44,6 +44,10 @@
                         <li class="nav-item">
                             <a href="{{ route('blocks') }}" class="nav-item">{{ __('Blocked users') }}</a>
                         </li>
+                        &nbsp;
+                        <li class="nav-item">
+                            <a href="{{ route('chats') }}" class="nav-item">{{ __('Chats') }}</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
