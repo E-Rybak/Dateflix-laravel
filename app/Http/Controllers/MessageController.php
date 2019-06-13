@@ -27,6 +27,7 @@ class MessageController extends Controller
         $message->body = request('message');
 
         $chat = Chat::findOrFail(request('chat_id'));
+
         $result = $this->IsUserAChatParticipant($chat, auth()->user());
         /*
         1. Validate users authorization to interact with the chat.
@@ -43,8 +44,11 @@ class MessageController extends Controller
                 $chat->messages()->save($message);
             }, 5);
 
-            broadcast(new SendMessage($message));
+            broadcast(new SendMessage($message, $chat->id));
             return redirect()->action('ChatController@show', $chat->id);
+        } else
+        {
+            return redirect()->action('ChatController@index');
         }
     }
 

@@ -19,7 +19,7 @@ trait ValidatesChats {
         $user = auth()->user()->load('chats');
         $chats = $user->chats->load('users');
         
-        $chat_participants = $this->getChatParticipantsIds($chats);
+        $chat_participants = $this->GetChatParticipantsIds($chats);
 
         $chat_exists = false;
         foreach ($chat_participants as $participant)
@@ -39,7 +39,7 @@ trait ValidatesChats {
 	 * @param \Illuminate\Database\Eloquent\Collection $chats
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	private function getChatParticipantsIds($chats)
+	private function GetChatParticipantsIds($chats)
 	{
         $chat_participants = $chats->map(function ($chat, $key) {
             return $chat->users->map(function ($user, $key) {
@@ -53,12 +53,12 @@ trait ValidatesChats {
     /**
      * Get and return the chat instances that are shared between an array of users and the  
      * authenticated user
-     * The parameter is an array of users ids exluding the authenticated user.
+     * The parameter is an array of users' ids exluding the authenticated user.
      *
      * @param array $ids
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    private function getChatFromUserIds(array $ids) 
+    private function GetChatFromUserIds(array $ids) 
     {
         $chatUserCollection = collect();
         foreach ($ids as $id) {
@@ -103,9 +103,9 @@ trait ValidatesChats {
             {
                 return true;
             } else {
-                return false;
+                continue;
             }
         }
+        return false;
     }
-
 }

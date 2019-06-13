@@ -54,7 +54,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 
+     * Finds and returns all liked users.
      * 
      * @return collection
      */
@@ -67,7 +67,7 @@ class User extends Authenticatable
         $filtered_users = $this->filter_blocked_users($users);
         
 
-        return $filtered_users;
+        return $filtered_users->where('id', '!=', auth()->id());
     }
 
     /**
@@ -85,7 +85,7 @@ class User extends Authenticatable
         $difference = $users->whereNotIn('id', $liked_user_ids);
         $without_blocked_users = $this->filter_blocked_users($difference);
 
-        return $without_blocked_users;
+        return $without_blocked_users->where('id', '!=', auth()->id());
     }
 
     public function blocked_users () {
