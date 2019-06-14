@@ -21,7 +21,8 @@
                     </ul>
                 </div>
                 <form @submit.prevent="sendMessage">
-                    <input type="text" name="message" v-model="message" required>
+                    <input type="text" name="message" v-model="message" required @keydown="tapParticipants">
+                    <span v-if="activePeer" v-text="activePeer.username + ' is typing...'"></span>
                     <button class="btn btn-success">Send message</button>
                 </form>
                 <form @submit.prevent="deleteChat">
@@ -40,11 +41,15 @@ import Axios from 'axios'
             console.log('Chat-show.vue mounted.')
             this.chat = JSON.parse(this._chat)
             this.ListenForNewMessage()
+            this.username = this._username
         },
         data(){
             return {
                 chat: {},
                 message: '',
+                username: '',
+                activePeer: false,
+                typingTimer: false
             }
         },
         methods: {
@@ -54,7 +59,21 @@ import Axios from 'axios'
                 Echo.private(channel)
                 .listen('SendMessage', (e) => {
                     this.chat.messages.push(e.message)
-                });
+                    this.activePeer = false
+                })
+                .listenForWhisper('typing', e => {
+
+                    this.activePeer = e;
+
+                    if (this.typingTimer) //If a timer already exists, we clear the existing one and start a new one. This prevents the flashing messaging from happening.
+                    {
+                        clearTimeout(this.typingTimer)
+                    }
+
+                    this.typingTimer = setTimeout(() => {
+                        this.activePeer = false
+                    }, 1000)
+                })
             },
             sendMessage()
             {
@@ -72,9 +91,17 @@ import Axios from 'axios'
                 .catch((error) => {
                     console.log(error.message)
                 });
+            },
+            tapParticipants()
+            {
+                var channel = 'Chat.' + this.chat.id
+                Echo.private(channel)
+                .whisper('typing', {
+                    username: this.username
+                })
             }
         },
-        props: ['_chat'],
+        props: ['_chat', '_username'],
         computed: {
             messageData: function () {
                 var data = { message: this.message, chat_id: this.chat.id }

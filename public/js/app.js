@@ -1908,17 +1908,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Chat-show.vue mounted.');
     this.chat = JSON.parse(this._chat);
     this.ListenForNewMessage();
+    this.username = this._username;
   },
   data: function data() {
     return {
       chat: {},
-      message: ''
+      message: '',
+      username: '',
+      activePeer: false,
+      typingTimer: false
     };
   },
   methods: {
@@ -1928,6 +1933,19 @@ __webpack_require__.r(__webpack_exports__);
       var channel = 'Chat.' + this.chat.id;
       Echo["private"](channel).listen('SendMessage', function (e) {
         _this.chat.messages.push(e.message);
+
+        _this.activePeer = false;
+      }).listenForWhisper('typing', function (e) {
+        _this.activePeer = e;
+
+        if (_this.typingTimer) //If a timer already exists, we clear the existing one and start a new one. This prevents the flashing messaging from happening.
+          {
+            clearTimeout(_this.typingTimer);
+          }
+
+        _this.typingTimer = setTimeout(function () {
+          _this.activePeer = false;
+        }, 1000);
       });
     },
     sendMessage: function sendMessage() {
@@ -1945,9 +1963,15 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error.message);
       });
+    },
+    tapParticipants: function tapParticipants() {
+      var channel = 'Chat.' + this.chat.id;
+      Echo["private"](channel).whisper('typing', {
+        username: this.username
+      });
     }
   },
-  props: ['_chat'],
+  props: ['_chat', '_username'],
   computed: {
     messageData: function messageData() {
       var data = {
@@ -47511,6 +47535,7 @@ var render = function() {
                 attrs: { type: "text", name: "message", required: "" },
                 domProps: { value: _vm.message },
                 on: {
+                  keydown: _vm.tapParticipants,
                   input: function($event) {
                     if ($event.target.composing) {
                       return
@@ -47519,6 +47544,16 @@ var render = function() {
                   }
                 }
               }),
+              _vm._v(" "),
+              _vm.activePeer
+                ? _c("span", {
+                    domProps: {
+                      textContent: _vm._s(
+                        _vm.activePeer.username + " is typing..."
+                      )
+                    }
+                  })
+                : _vm._e(),
               _vm._v(" "),
               _c("button", { staticClass: "btn btn-success" }, [
                 _vm._v("Send message")
