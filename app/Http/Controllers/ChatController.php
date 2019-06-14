@@ -79,6 +79,5 @@ class ChatController extends Controller
     {
         $chat = Chat::findOrFail(request('chat_id'));
         $chat->delete(); // Triggers ChatDeleted event and listener DeleteChatRelations, which detaches all users from the chat.
-        return redirect()->action('ChatController@index');
     }
 }

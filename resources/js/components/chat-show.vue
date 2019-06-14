@@ -22,8 +22,10 @@
                 </div>
                 <form @submit.prevent="sendMessage">
                     <input type="text" name="message" v-model="message" required>
-                    <input type="hidden" name="chat_id" :value="chat.id">
                     <button class="btn btn-success">Send message</button>
+                </form>
+                <form @submit.prevent="deleteChat">
+                    <button class="btn btn-danger">Delete chat permanently</button>
                 </form>
             </div>
             </div>
@@ -56,7 +58,17 @@ import Axios from 'axios'
             },
             sendMessage()
             {
-                Axios.post('http://127.0.0.1:8000/message', this.formData)
+                Axios.post('http://127.0.0.1:8000/message', this.messageData)
+                .catch((error) => {
+                    console.log(error.message)
+                });
+            },
+            deleteChat()
+            {
+                Axios.delete('http://127.0.0.1:8000/chat', { data: { chat_id: this.chat.id } })
+                .then((response) => {
+                    window.location.href = "http://127.0.0.1:8000/chat"
+                })
                 .catch((error) => {
                     console.log(error.message)
                 });
@@ -64,9 +76,9 @@ import Axios from 'axios'
         },
         props: ['_chat'],
         computed: {
-            formData: function () {
+            messageData: function () {
                 var data = { message: this.message, chat_id: this.chat.id }
-                return data;
+                return data
             }
         }
     };

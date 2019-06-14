@@ -1906,6 +1906,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
@@ -1929,14 +1931,25 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     sendMessage: function sendMessage() {
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('http://127.0.0.1:8000/message', this.formData)["catch"](function (error) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('http://127.0.0.1:8000/message', this.messageData)["catch"](function (error) {
+        console.log(error.message);
+      });
+    },
+    deleteChat: function deleteChat() {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('http://127.0.0.1:8000/chat', {
+        data: {
+          chat_id: this.chat.id
+        }
+      }).then(function (response) {
+        window.location.href = "http://127.0.0.1:8000/chat";
+      })["catch"](function (error) {
         console.log(error.message);
       });
     }
   },
   props: ['_chat'],
   computed: {
-    formData: function formData() {
+    messageData: function messageData() {
       var data = {
         message: this.message,
         chat_id: this.chat.id
@@ -47507,13 +47520,25 @@ var render = function() {
                 }
               }),
               _vm._v(" "),
-              _c("input", {
-                attrs: { type: "hidden", name: "chat_id" },
-                domProps: { value: _vm.chat.id }
-              }),
-              _vm._v(" "),
               _c("button", { staticClass: "btn btn-success" }, [
                 _vm._v("Send message")
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.deleteChat($event)
+                }
+              }
+            },
+            [
+              _c("button", { staticClass: "btn btn-danger" }, [
+                _vm._v("Delete chat permanently")
               ])
             ]
           )
@@ -59938,8 +59963,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\Dateflix\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\Dateflix\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\Dateflix-laravel\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\Dateflix-laravel\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

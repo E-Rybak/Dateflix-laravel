@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Message;
 
 class DeleteChatRelations
 {
@@ -26,5 +27,10 @@ class DeleteChatRelations
     public function handle($event)
     {
         $event->chat->users()->detach();
+        $messages = $event->chat->messages;
+        $message_ids = $messages->map(function ($item, $key) {
+            return $item->id;
+        });
+        Message::whereIn('id', $message_ids)->delete();
     }
 }
