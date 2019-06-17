@@ -81,6 +81,7 @@ import Axios from 'axios'
                 .catch((error) => {
                     console.log(error.message)
                 });
+                this.message = ''
             },
             deleteChat()
             {

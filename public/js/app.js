@@ -1952,6 +1952,7 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('http://127.0.0.1:8000/message', this.messageData)["catch"](function (error) {
         console.log(error.message);
       });
+      this.message = '';
     },
     deleteChat: function deleteChat() {
       axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('http://127.0.0.1:8000/chat', {
@@ -59998,8 +59999,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\Dateflix-laravel\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\Dateflix-laravel\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\Dateflix\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\Dateflix\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
